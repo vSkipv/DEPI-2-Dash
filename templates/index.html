@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-lg">
+            <div class="card-body text-center">
+                <h2 class="card-title mb-4">
+                    <i class="fas fa-microscope text-primary me-2"></i>
+                    Skin Cancer Detection
+                </h2>
+                <p class="lead mb-4">Upload an image of a skin lesion for AI-powered analysis</p>
+                
+                <div class="upload-area p-5 mb-4 border rounded" id="dropZone">
+                    <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
+                    <h4>Drag & Drop Image Here</h4>
+                    <p class="text-muted">or</p>
+                    <input type="file" id="fileInput" class="d-none" accept="image/*">
+                    <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                        Choose File
+                    </button>
+                </div>
+
+                <div id="preview" class="mb-4 d-none">
+                    <img id="imagePreview" class="img-fluid rounded" style="max-height: 300px;">
+                </div>
+
+                <div id="result" class="d-none">
+                    <div class="alert alert-info">
+                        <h5>Analysis Result</h5>
+                        <p id="predictionText"></p>
+                        <div class="progress mb-3">
+                            <div id="confidenceBar" class="progress-bar" role="progressbar"></div>
+                        </div>
+                        <p id="confidenceText" class="mb-0"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const preview = document.getElementById('preview');
+    const imagePreview = document.getElementById('imagePreview');
+    const result = document.getElementById('result');
+    const predictionText = document.getElementById('predictionText');
+    const confidenceBar = document.getElementById('confidenceBar');
+    const confidenceText = document.getElementById('confidenceText');
+
+    // Drag and drop handlers
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('border-primary');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('border-primary');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-primary');
+        const file = e.dataTransfer.files[0];
+        handleFile(file);
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        handleFile(file);
+    });
+
+    function handleFile(file) {
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagePreview.src = e.target.result;
+                preview.classList.remove('d-none');
+                uploadImage(file);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function uploadImage(file) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        fetch('/upload', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                result.classList.remove('d-none');
+                predictionText.textContent = `Prediction: ${data.prediction}`;
+                confidenceBar.style.width = `${data.confidence * 100}%`;
+                confidenceText.textContent = `Confidence: ${(data.confidence * 100).toFixed(2)}%`;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while processing the image.');
+        });
+    }
+});
+</script>
+{% endblock %} 

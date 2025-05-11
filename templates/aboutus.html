@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Meet Our Team</h2>
+    <div class="row justify-content-center">
+        <!-- Member 1 -->
+        <div class="col-md-3 col-sm-6 mb-4 text-center">
+            <img src="{{ url_for('static', filename='images/Eyad.jpg') }}" class="rounded-circle mb-2" width="150" height="150" alt="Member 1">
+            <h5>Eyad Almallah</h5>
+            <p class="text-muted">Team Leader</p>
+        </div>
+        <!-- Member 2 -->
+        <div class="col-md-3 col-sm-6 mb-4 text-center">
+            <img src="{{ url_for('static', filename='images/Sama.jpeg') }}" class="rounded-circle mb-2" width="150" height="150" alt="Member 2">
+            <h5>Sama Hassan</h5>
+            <p class="text-muted">Member</p>
+        </div>
+        <!-- Member 3 -->
+        <div class="col-md-3 col-sm-6 mb-4 text-center">
+            <img src="{{ url_for('static', filename='images/member3.jpg') }}" class="rounded-circle mb-2" width="150" height="150" alt="Member 3">
+            <h5>Youssef Ahmed</h5>
+            <p class="text-muted">Member</p>
+        </div>
+        <!-- Member 4 -->
+        <div class="col-md-3 col-sm-6 mb-4 text-center">
+            <img src="{{ url_for('static', filename='images/Salma.jpg') }}" class="rounded-circle mb-2" width="150" height="150" alt="Member 4">
+            <h5>Salma Yasser</h5>
+            <p class="text-muted">Member</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
